@@ -1,8 +1,26 @@
 from flask import Flask, request, jsonify
 from yt_dlp import YoutubeDL
-import urllib.parse
 
 app = Flask(__name__)
+
+
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({
+        "status": "ok",
+        "message": "ytmusic api is running",
+        "routes": [
+            "/",
+            "/health",
+            "/api/play?q=<song_name>"
+        ]
+    })
+
+
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "healthy"})
+
 
 @app.route("/api/play", methods=["GET"])
 def play_song():
@@ -47,3 +65,7 @@ def play_song():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
